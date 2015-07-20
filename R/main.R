@@ -1,7 +1,41 @@
 #' Statistical tests to compare word clouds
+#'
+#' \code{\link{wordcloudstats}} is the main user interface to conduct a quantitative analysis of
+#' the significance of the observed differences between the two word clouds.
+#'
+#' @name wordcloudanalysis-package
+#' @docType package
 NULL
 
-#' Main user interface function. Returns a table of results
+#' @export
+#' @title Quantitative statistical analysis of differences between two word clouds.
+#' @description Main user interface function for quantitative statistical analysis between two
+#' word clouds. If \code{avoid.words} is specified, then words that ought to be ignored are
+#' excluded from the analysis. The common terms between \code{l1} and \code{l2} are
+#' considered for statistical analysis. The analysis computes the significance of the
+#' observed differences in term occurrence in the \code{l1} and \code{l2}.
+#'
+#' @param l1 A character vector representing terms corresponding to one word cloud
+#' @param l2 A character vector representing terms corresponding to the other word cloud
+#' @param names A character vector of length 2 with the two names for the provided lists. The
+#'              first element corresponds to \code{l1} and the second element corresponds to \code{l2}.
+#' @param avoid.words A character vector of words to ignore when analyzing the two word clouds.
+#'                    Defaults to \code{NULL}.
+#'
+#' @return A list of three elements. \code{outputs} contains a matrix of the significance and
+#' counts of each of the common terms between the lists. \code{counts} contains a table of
+#' the counts of each term. \code{frequency} contains a table of the frequencies of each term
+#' in each list.
+#'
+#' @examples
+#' group1 <- c('head','toe','hand',rep('knee',4))
+#' group2 <- c(rep('toe',3),'hand',rep('head',2))
+#'
+#' stats <- wordcloudstats(group1, group2, names=c('Group 1','Group 2'))
+#'
+#' head(stats$outputs)
+#'
+#' @seealso \code{\link[stats]{prop.test}}
 wordcloudstats <- function(l1, l2, names, avoid.words=NULL) {
 
   # Remove words that the user wants to avoid
