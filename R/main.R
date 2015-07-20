@@ -84,8 +84,6 @@ wordcloudstats <- function(l1, l2, names, avoid.words=NULL) {
   l2.out <- rep(1,nrow(count))
   names(l2.out) <- rownames(count)
 
-  message(names[1])
-  message(names[2])
   # Run proportions test
   for (term in rownames(count)) {
     l1.yes <- count[term,1]

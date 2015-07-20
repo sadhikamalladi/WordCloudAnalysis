@@ -18,6 +18,8 @@ Quantitatively, this package can provide a table of frequencies and counts given
 ## Data Generation
 First, let's generate some test data that we can use for the quantitative and qualitative comparisons. The statistical analysis takes as input two character vectors, each representing one word cloud. Note that you should see repeats in these two vectors, or the word cloud comparison would be fruitless. 
 ```{r}
+library(WordCloudAnalysis)
+
 group1 <- c(rep('car',3),'banana','truck',rep('staples',20))
 group2 <- c(rep('banana',14),'cloud',rep('truck',3),'car',rep('staples',5))
 ```
