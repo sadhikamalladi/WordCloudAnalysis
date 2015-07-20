@@ -1,0 +1,53 @@
+---
+title: "WordCloudAnalysis"
+author: "Sadhika Malladi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package provides a quantitative and qualitative comparison between two word clouds. Word clouds are helpful for summarizing a large amount of words and extracting important ones. However, it can be difficult to compare two word clouds to find differences in important terms and how they occur. For example, you may want to compare the rhetoric used by two debating politicians to find policies and connotations they support. 
+
+One of the major uses for word clouds is in bioinformatics. Many analyses output a large number of words that would be too time-consuming for the scientist to manually analyze. We use the example of gene set enrichment analysis (GSEA) throughout this vignette to demonstrate the functionality of this package. GSEA returns many genesets, some of which are related, that pertain to a given gene list or ranking of genes. GSEA is often used with differentially expressed genes to identify functions and pathways associated with a biological or clinical class.
+
+Quantitatively, this package can provide a table of frequencies and counts given two word clouds, and then determine the significance of the difference in proportion of occurrence for each term. These significances (p-values) are then adjusted using the Benjamini-Hochberg method to yield an FDR, or q-value. If the package is being applied to GSEA output (or analogous data), then there will often be a background set of characters that must be adjusted for. In the example of GSEA output, this background would be the aggregation of all of the GSEA outputs.
+
+## Data Generation
+First, let's generate some test data that we can use for the quantitative and qualitative comparisons. The statistical analysis takes as input two character vectors, each representing one word cloud. Note that you should see repeats in these two vectors, or the word cloud comparison would be fruitless. 
+```{r}
+group1 <- c(rep('car',3),'banana','truck',rep('staples',20))
+group2 <- c(rep('banana',14),'cloud',rep('truck',3),'car',rep('staples',5))
+```
+
+You also have the option of providing words that you don't want to include in the analysis and passing it as a parameter to the statistical analysis method.
+
+## Statistical Analyses
+The main interface to conducting statistical analyses in `WordCloudAnalysis` is the `wordcloudstats` function. This function outputs a list including a frequency table, a count table, and a table containing the significance of the difference observed between the two groups and the group in which the count proportion is greater. The significance is computed using `prop.test`.
+
+To compare `group1` and `group2` defined above, let's use the `wordcloudstats` method.
+
+```{r}
+assigned.names <- c('Group 1', 'Group 2')
+stats <- wordcloudstats(group1, group2, names=assigned.names)
+```
+
+# Examine Results
+The object `stats` is now a list of lists. The first element has the desirable output matrix with the statistical measures and can be accessed the following way:
+```{r}
+head(stats$outputs)
+```
+
+The second element has the counts of each term in each of the lists. It can be accessed this way:
+```{r}
+head(stats$counts)
+```
+
+The third and final element has the frequency of the occurrence of each term in each list. It can be accessed this way:
+```{r}
+head(stats$frequency)
+```
+
+That concludes the vignette on `WordCloudAnalysis`. Please reference the manual for other inquiries.
