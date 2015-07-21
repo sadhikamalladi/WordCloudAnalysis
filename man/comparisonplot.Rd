@@ -17,7 +17,8 @@ must be set to the terms.}
 represent count values for each of the groups.}
 
 \item{qvals}{A vector of q-values for each of the terms. The names for the vector
-must be the terms. Q-values of 0 are rounded to 0.00001}
+must be the terms. Q-values of 0 are rounded to 0.00001. Note that there
+must be at least two distinct q-values (i.e., they cannot all be 1).}
 
 \item{colors}{A character vector of length three. The first element represents the color
 that the term should be plotted in if the count value is greater in the
