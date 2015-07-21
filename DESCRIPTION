@@ -8,7 +8,10 @@ Maintainer: Sadhika Malladi <sadhika.malladi@outlook.com>
 Description: This package includes functionality for a quantitative comparison of
         frequencies and count values in two word clouds. Helpful functions for meaningful
         plots that facilitate comparison are also available.
-License: None
+License: MIT + file LICENSE
+Depends: R (>= 3.2.1)
 LazyData: TRUE
 Suggests: knitr
+Imports: wordcloud
 VignetteBuilder: knitr
+NeedsCompilation: no
