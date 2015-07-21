@@ -52,4 +52,26 @@ The third and final element has the frequency of the occurrence of each term in 
 head(stats$frequency)
 ```
 
+## Graphical Analysis
+The main interface to conducting graphical analysis in `WordCloudAnalysis` is the `plotcomparison` function. This function creates a graph that summarizes most of the information from the statistical analysis described above. The graph plots the frequency of the second group versus the frequency of the first group for each term. At each point, the term name is printed. The color of the term describes which group the term had a greater **count** value in, which may differ from the group that had a higher frequency. The size of the term
+is inversely related to the q-value (i.e., directly indicative of the significance of the difference in term occurrence in the groups).
+
+It is important to note that a graphical analysis of the results from a statistical analysis that found q-values of 1 for all of the terms will cause an error in the size computation.
+
+Let's take a look at how we can use this function. Note that the dummy data would obviously produce q-values of 1 for every common term, so we can generate some random q-values between 0 and 1 for the purposes of this exercise. You can explore all the parameters available for modifying the plot using `?plotcomparison`.
+
+```{r}
+qvals <- runif(nrow(stats$frequency), 0.0, 1.0)
+names(qvals) <- rownames(stats$frequency)
+
+plotcomparison(stats$frequency, stats$counts, qvals, colors=c('blue','red','green'))
+```
+
+## Wrapping Up
 That concludes the vignette on `WordCloudAnalysis`. Please reference the manual for other inquiries.
+
+## Session Information
+```{r, echo=FALSE}
+sessionInfo()
+```
+
