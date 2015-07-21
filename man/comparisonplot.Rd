@@ -35,9 +35,6 @@ Defaults to \code{c(-0.5,1)}.}
 
 \item{ylim}{A numeric vector of length two with the lower and upper bounds for the y-axis of the graph.
             Defaults to \code{c(-0.5,1)}.}
-
-\item{direction}{A vector of numeric values indicating whether the term belongs to
-group 1 or 2. The names of the vector must be the terms.}
 }
 \description{
 Main user interface for qualitative analysis of two word clouds.

@@ -142,8 +142,6 @@ wordcloudstats <- function(l1, l2, names, avoid.words=NULL) {
 #' @param qvals A vector of q-values for each of the terms. The names for the vector
 #'              must be the terms. Q-values of 0 are rounded to 0.00001. Note that there
 #'              must be at least two distinct q-values (i.e., they cannot all be 1).
-#' @param direction A vector of numeric values indicating whether the term belongs to
-#'                  group 1 or 2. The names of the vector must be the terms.
 #' @param colors A character vector of length three. The first element represents the color
 #'               that the term should be plotted in if the count value is greater in the 
 #'               first group compared to the second group. The second element represents
