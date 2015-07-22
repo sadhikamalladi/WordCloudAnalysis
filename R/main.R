@@ -32,7 +32,7 @@ NULL
 #' of terms in group 1 that are not the specific term)
 #' \item count.in.\code{names[2]} (denoting the count of the term in group 2)
 #' \item unmatched.term.count.\code{names[2]} (denoting \code{length(text2)} - \code{count.in.names[2]}, or the number
-#' of terms in group 1 that are not the specific term)
+#' of terms in group 2 that are not the specific term)
 #' \item p.value (the nominal p-value of the observed differences in the specific term)
 #' \item bh.value (the Benjamini-Hochberg adjusted p-value)
 #' \item greater.frequency.in (the group in which the frequency of the term is greater: \code{names[1]}, \code{names[2]}, or 'equal')
