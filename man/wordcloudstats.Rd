@@ -4,31 +4,44 @@
 \alias{wordcloudstats}
 \title{Quantitative statistical analysis of differences between two word clouds.}
 \usage{
-wordcloudstats(l1, l2, names, avoid.words = NULL)
+wordcloudstats(text1, text2, names, avoid.words = NULL)
 }
 \arguments{
-\item{l1}{A character vector representing terms corresponding to one word cloud}
+\item{text1}{A character vector representing terms corresponding to one word cloud}
 
-\item{l2}{A character vector representing terms corresponding to the other word cloud}
+\item{text2}{A character vector representing terms corresponding to the other word cloud}
 
 \item{names}{A character vector of length 2 with the two names for the provided lists. The
-first element corresponds to \code{l1} and the second element corresponds to \code{l2}.}
+first element corresponds to \code{text1} and the second element corresponds to \code{text2}.}
 
 \item{avoid.words}{A character vector of words to ignore when analyzing the two word clouds.
                    Defaults to \code{NULL}.}
 }
 \value{
 A list of three elements. \code{outputs} contains a matrix of the significance and
-counts of each of the common terms between the lists. \code{counts} contains a table of
+counts of each of the common terms between the lists. Specifically, the columns consist of:
+\itemize{
+\item count.in.\code{names[1]} (denoting the count of the term in group 1)
+\item unmatched.term.count.\code{names[1]} (denoting \code{length(text1)} - \code{count.in.names[1]}, or the number
+of terms in group 1 that are not the specific term)
+\item count.in.\code{names[2]} (denoting the count of the term in group 2)
+\item unmatched.term.count.\code{names[2]} (denoting \code{length(text2)} - \code{count.in.names[2]}, or the number
+of terms in group 1 that are not the specific term)
+\item p.value (the nominal p-value of the observed differences in the specific term)
+\item bh.value (the Benjamini-Hochberg adjusted p-value)
+\item greater.frequency.in (the group in which the frequency of the term is greater: \code{names[1]}, \code{names[2]}, or 'equal')
+}
+
+\code{counts} contains a table of
 the counts of each term. \code{frequency} contains a table of the frequencies of each term
 in each list.
 }
 \description{
 Main user interface function for quantitative statistical analysis between two
 word clouds. If \code{avoid.words} is specified, then words that ought to be ignored are
-excluded from the analysis. The common terms between \code{l1} and \code{l2} are
+excluded from the analysis. The common terms between \code{text1} and \code{text2} are
 considered for statistical analysis. The analysis computes the significance of the
-observed differences in term occurrence in the \code{l1} and \code{l2}.
+observed differences in term occurrence in the \code{text1} and \code{text2}.
 }
 \examples{
 group1 <- c('head','toe','hand',rep('knee',4))

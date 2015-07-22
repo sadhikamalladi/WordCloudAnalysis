@@ -13,19 +13,32 @@ NULL
 #' @title Quantitative statistical analysis of differences between two word clouds.
 #' @description Main user interface function for quantitative statistical analysis between two
 #' word clouds. If \code{avoid.words} is specified, then words that ought to be ignored are
-#' excluded from the analysis. The common terms between \code{l1} and \code{l2} are
+#' excluded from the analysis. The common terms between \code{text1} and \code{text2} are
 #' considered for statistical analysis. The analysis computes the significance of the
-#' observed differences in term occurrence in the \code{l1} and \code{l2}.
+#' observed differences in term occurrence in the \code{text1} and \code{text2}.
 #'
-#' @param l1 A character vector representing terms corresponding to one word cloud
-#' @param l2 A character vector representing terms corresponding to the other word cloud
+#' @param text1 A character vector representing terms corresponding to one word cloud
+#' @param text2 A character vector representing terms corresponding to the other word cloud
 #' @param names A character vector of length 2 with the two names for the provided lists. The
-#'              first element corresponds to \code{l1} and the second element corresponds to \code{l2}.
+#'              first element corresponds to \code{text1} and the second element corresponds to \code{text2}.
 #' @param avoid.words A character vector of words to ignore when analyzing the two word clouds.
 #'                    Defaults to \code{NULL}.
 #'
 #' @return A list of three elements. \code{outputs} contains a matrix of the significance and
-#' counts of each of the common terms between the lists. \code{counts} contains a table of
+#' counts of each of the common terms between the lists. Specifically, the columns consist of:
+#' \itemize{
+#' \item count.in.\code{names[1]} (denoting the count of the term in group 1)
+#' \item unmatched.term.count.\code{names[1]} (denoting \code{length(text1)} - \code{count.in.names[1]}, or the number
+#' of terms in group 1 that are not the specific term)
+#' \item count.in.\code{names[2]} (denoting the count of the term in group 2)
+#' \item unmatched.term.count.\code{names[2]} (denoting \code{length(text2)} - \code{count.in.names[2]}, or the number
+#' of terms in group 1 that are not the specific term)
+#' \item p.value (the nominal p-value of the observed differences in the specific term)
+#' \item bh.value (the Benjamini-Hochberg adjusted p-value)
+#' \item greater.frequency.in (the group in which the frequency of the term is greater: \code{names[1]}, \code{names[2]}, or 'equal')
+#' } 
+#' 
+#' \code{counts} contains a table of
 #' the counts of each term. \code{frequency} contains a table of the frequencies of each term
 #' in each list.
 #'
@@ -38,37 +51,37 @@ NULL
 #' head(stats$outputs)
 #'
 #' @seealso \code{\link[stats]{prop.test}}
-wordcloudstats <- function(l1, l2, names, avoid.words=NULL) {
+wordcloudstats <- function(text1, text2, names, avoid.words=NULL) {
 
   # Remove words that the user wants to avoid
   if (! is.null(avoid.words)) {
-    l1 <- l1[!l1 %in% avoid.words]
-    l2 <- l2[!l2 %in% avoid.words]
+    text1 <- text1[!text1 %in% avoid.words]
+    text2 <- text2[!text2 %in% avoid.words]
   }
 
   # Keep only the terms that appear at least once in each list
-  common <- intersect(unique(l1),unique(l2))
-  l1 <- l1[l1%in%common]
-  l2 <- l2[l2%in%common]
+  common <- intersect(unique(text1),unique(text2))
+  text1 <- text1[text1%in%common]
+  text2 <- text2[text2%in%common]
 
   # Basic frequency table
-  l1.freq <- unlist(table(l1))/length(l1)
-  l2.freq <- unlist(table(l2))/length(l2)
+  text1.freq <- unlist(table(text1))/length(text1)
+  text2.freq <- unlist(table(text2))/length(text2)
 
-  freq <- matrix(NA,nrow=length(l1.freq),ncol=2)
-  rownames(freq) <- names(l1.freq)
-  freq[,1] <- l1.freq
-  freq[names(l2.freq),2] <- l2.freq
+  freq <- matrix(NA,nrow=length(text1.freq),ncol=2)
+  rownames(freq) <- names(text1.freq)
+  freq[,1] <- text1.freq
+  freq[names(text2.freq),2] <- text2.freq
   colnames(freq) <- names
 
   # Basic count table
-  l1.ct <- unlist(table(l1))
-  l2.ct <- unlist(table(l2))
+  text1.ct <- unlist(table(text1))
+  text2.ct <- unlist(table(text2))
 
-  count <- matrix(NA,nrow=length(l1.ct),ncol=2)
-  rownames(count) <- names(l1.ct)
-  count[,1] <- l1.ct
-  count[names(l2.ct),2] <- l2.ct
+  count <- matrix(NA,nrow=length(text1.ct),ncol=2)
+  rownames(count) <- names(text1.ct)
+  count[,1] <- text1.ct
+  count[names(text2.ct),2] <- text2.ct
   colnames(count) <- names
 
   pvals <- rep(1,nrow(count))
@@ -76,49 +89,49 @@ wordcloudstats <- function(l1, l2, names, avoid.words=NULL) {
   g.in <- rep(1,nrow(count))
   names(g.in) <- rownames(count)
 
-  l1.in <- rep(1,nrow(count))
-  names(l1.in) <- rownames(count)
-  l1.out <- rep(1,nrow(count))
-  names(l1.out) <- rownames(count)
+  text1.in <- rep(1,nrow(count))
+  names(text1.in) <- rownames(count)
+  text1.out <- rep(1,nrow(count))
+  names(text1.out) <- rownames(count)
 
-  l2.in <- rep(1,nrow(count))
-  names(l2.in) <- rownames(count)
-  l2.out <- rep(1,nrow(count))
-  names(l2.out) <- rownames(count)
+  text2.in <- rep(1,nrow(count))
+  names(text2.in) <- rownames(count)
+  text2.out <- rep(1,nrow(count))
+  names(text2.out) <- rownames(count)
 
   # Run proportions test
   for (term in rownames(count)) {
-    l1.yes <- count[term,1]
-    l2.yes <- count[term,2]
-    l1.no <- length(l1) - l1.yes
-    l2.no <- length(l2) - l2.yes
+    text1.yes <- count[term,1]
+    text2.yes <- count[term,2]
+    text1.no <- length(text1) - text1.yes
+    text2.no <- length(text2) - text2.yes
 
-    l1.in[term] <- l1.yes
-    l1.out[term] <- l1.no
-    l2.in[term] <- l2.yes
-    l2.out[term] <- l2.no
+    text1.in[term] <- text1.yes
+    text1.out[term] <- text1.no
+    text2.in[term] <- text2.yes
+    text2.out[term] <- text2.no
 
     mat <- matrix(NA, nrow=2, ncol=2)
-    mat[1,1] <- l1.yes
-    mat[1,2] <- l1.no
-    mat[2,1] <- l2.yes
-    mat[2,2] <- l2.no
+    mat[1,1] <- text1.yes
+    mat[1,2] <- text1.no
+    mat[2,1] <- text2.yes
+    mat[2,2] <- text2.no
 
     ptest <- prop.test(mat)
     pvals[term] <- ptest$p.value
     maxval<- max(as.numeric(unlist(ptest$estimate)))
     g.in.ind <- grep(maxval,as.numeric(unlist(ptest$estimate)))
     if (length(g.in.ind) > 1)
-      g.in[term] <- 'Equal'
+      g.in[term] <- 'equal'
     else
       g.in[term] <- names[g.in.ind[1]]
   }
 
   p.adj <- p.adjust(unname(pvals),method='fdr')
-  mat.val <- cbind(l1.in,l1.out,l2.in,l2.out,pvals,p.adj,g.in)
-  present.names <- paste('Number of occurences in',names)
-  absent.names <- paste('Number of unmatched terms in',names)
-  mat.names <- c(present.names[1],absent.names[1], present.names[2],absent.names[2],'P-Value','BH Value','Greater frequency in')
+  mat.val <- cbind(text1.in,text1.out,text2.in,text2.out,pvals,p.adj,g.in)
+  present.names <- paste('count.in',names,sep='.')
+  absent.names <- paste('unmatched.term.count',names,sep='.')
+  mat.names <- c(present.names[1],absent.names[1], present.names[2],absent.names[2],'p.Value','bh.Value','greater.frequency.in')
   colnames(mat.val) <- mat.names
 
   list(outputs=mat.val,counts=count,frequency=freq)
