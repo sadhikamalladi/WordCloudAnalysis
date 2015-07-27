@@ -5,7 +5,7 @@ Version: 0.1
 Date: 2015-07-20
 Author: Sadhika Malladi [aut,cre]
 Maintainer: Sadhika Malladi <sadhika.malladi@outlook.com>
-Description: This package includes functionality for a quantitative comparison of
+Description: Includes functionality for a quantitative comparison of
         frequencies and count values in two word clouds. Helpful functions for meaningful
         plots that facilitate comparison are also available.
 License: MIT + file LICENSE
